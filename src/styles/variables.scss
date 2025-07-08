@@ -1,0 +1,37 @@
+:root {
+    // Light mode colors (default - white background)
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F8F8;
+    --bg-tertiary: #F0F0F0;
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --border-color: #E0E0E0;
+    --accent: #000000;
+    
+    // Dark mode colors (black background)
+    &[data-theme="dark"] {
+      --bg-primary: #000000;
+      --bg-secondary: #0A0A0A;
+      --bg-tertiary: #141414;
+      --text-primary: #FFFFFF;
+      --text-secondary: #999999;
+      --border-color: #222222;
+      --accent: #FFFFFF;
+    }
+    
+    // Layout
+    --sidebar-width: 320px;
+    --header-height: 80px;
+    
+    // Spacing
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    
+    // Transitions
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.3s ease;
+    --transition-slow: 0.5s ease;
+  }
