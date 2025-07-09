@@ -75,7 +75,7 @@
     border-right: 1px solid var(--border-color);
   }
   
-  // Main Content
+  // Main Content - Updated to center when sidebar is hidden
   .mainContent {
     min-height: 100vh;
     background-color: var(--bg-secondary);
@@ -89,12 +89,22 @@
         margin-right: 280px;
       }
       
+      // When sidebar is hidden, center the content
       &.expanded {
         margin-left: 0;
+        margin-right: 0;
+        display: flex;
+        justify-content: center;
         
-        &.withFilter {
-          margin-right: 0;
+        // Limit max width for better viewing
+        > div {
+          max-width: 1600px;
+          width: 100%;
         }
+      }
+      
+      &.expanded.withFilter {
+        margin-right: 280px;
       }
     }
   }

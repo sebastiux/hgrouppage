@@ -12,7 +12,7 @@ function App() {
   }, [theme])
 
   return (
-    <Router>
+    <Router basename="/hgrouppage"> {/* Add basename if serving from subfolder */}
       <Routes>
         <Route path="/" element={
           <Layout 

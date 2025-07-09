@@ -7,7 +7,7 @@ import styles from './Layout.module.scss'
 
 const Layout = ({ theme, setTheme, language, setLanguage }) => {
   const [activeFilter, setActiveFilter] = useState('EVERYTHING')
-  const [filterPanelOpen, setFilterPanelOpen] = useState(false) // Always start closed
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isScrollingDown, setIsScrollingDown] = useState(false)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -17,7 +17,6 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
   const scrollTimeout = useRef(null)
   
   useEffect(() => {
-    // Check if mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
@@ -37,7 +36,6 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
       const currentScrollY = window.scrollY
       const scrollDelta = currentScrollY - lastScrollY
       
-      // Only hide if scrolled down more than 50px
       if (scrollDelta > 0 && currentScrollY > 50) {
         if (!isScrollingDown) {
           setIsScrollingDown(true)
@@ -52,7 +50,6 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
       
       setLastScrollY(currentScrollY)
       
-      // Auto show menus when stopped scrolling
       scrollTimeout.current = setTimeout(() => {
         if (isScrollingDown) {
           setIsScrollingDown(false)
@@ -68,17 +65,17 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
         clearTimeout(scrollTimeout.current)
       }
     }
-  }, [lastScrollY, isScrollingDown])
+  }, [lastScrollY, isScrollingDown, filterPanelOpen])
   
   const animateMenus = (direction) => {
     const tl = gsap.timeline()
     
     if (direction === 'hide') {
-      // Desktop animations
+      // Desktop animations with smoother easing
       if (!isMobile && sidebarRef.current) {
         tl.to(sidebarRef.current, {
           x: -320,
-          duration: 0.6,
+          duration: 0.8,
           ease: 'power3.inOut'
         }, 0)
       }
@@ -86,7 +83,7 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
       if (filterPanelOpen && filterRef.current) {
         tl.to(filterRef.current, {
           x: 300,
-          duration: 0.6,
+          duration: 0.8,
           ease: 'power3.inOut'
         }, 0)
       }
@@ -95,21 +92,21 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
       if (isMobile) {
         tl.to(`.${styles.mobileHeader}`, {
           y: -70,
-          duration: 0.4,
+          duration: 0.5,
           ease: 'power3.inOut'
         }, 0)
         .to(`.${styles.mobileNav}`, {
           y: 70,
-          duration: 0.4,
+          duration: 0.5,
           ease: 'power3.inOut'
         }, 0)
       }
     } else {
-      // Show animations
+      // Show animations with elegant easing
       if (!isMobile && sidebarRef.current) {
         tl.to(sidebarRef.current, {
           x: 0,
-          duration: 0.6,
+          duration: 0.8,
           ease: 'power3.out'
         }, 0)
       }
@@ -117,7 +114,7 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
       if (filterPanelOpen && filterRef.current) {
         tl.to(filterRef.current, {
           x: 0,
-          duration: 0.6,
+          duration: 0.8,
           ease: 'power3.out'
         }, 0)
       }
@@ -125,12 +122,12 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
       if (isMobile) {
         tl.to(`.${styles.mobileHeader}`, {
           y: 0,
-          duration: 0.4,
+          duration: 0.5,
           ease: 'power3.out'
         }, 0)
         .to(`.${styles.mobileNav}`, {
           y: 0,
-          duration: 0.4,
+          duration: 0.5,
           ease: 'power3.out'
         }, 0)
       }
@@ -144,8 +141,22 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
     if (newState && filterRef.current) {
       gsap.fromTo(filterRef.current,
         { x: 300, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5, ease: 'power3.out' }
+        { x: 0, opacity: 1, duration: 0.6, ease: 'power3.out' }
       )
+    }
+  }
+  
+  const closeFilterPanel = () => {
+    if (filterRef.current) {
+      gsap.to(filterRef.current, {
+        x: 300,
+        opacity: 0,
+        duration: 0.4,
+        ease: 'power3.in',
+        onComplete: () => setFilterPanelOpen(false)
+      })
+    } else {
+      setFilterPanelOpen(false)
     }
   }
   
@@ -178,7 +189,7 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
         </div>
       )}
       
-      <main className={`${styles.mainContent} ${filterPanelOpen && !isMobile ? styles.withFilter : ''}`}>
+      <main className={`${styles.mainContent} ${filterPanelOpen && !isMobile ? styles.withFilter : ''} ${isScrollingDown && !isMobile ? styles.expanded : ''}`}>
         <Gallery 
           filter={activeFilter} 
           onToggleFilter={toggleFilterPanel}
@@ -187,19 +198,21 @@ const Layout = ({ theme, setTheme, language, setLanguage }) => {
         />
       </main>
       
-      {/* Filter Panel */}
-      <aside 
-        className={`${styles.filterPanel} ${!filterPanelOpen ? styles.hidden : ''} ${isMobile ? styles.mobile : ''}`}
-        ref={filterRef}
-      >
-        <FilterPanel 
-          onFilterChange={setActiveFilter}
-          isOpen={filterPanelOpen}
-          onClose={() => setFilterPanelOpen(false)}
-          activeFilter={activeFilter}
-          isMobile={isMobile}
-        />
-      </aside>
+      {/* Filter Panel - Only render when open */}
+      {filterPanelOpen && (
+        <aside 
+          className={`${styles.filterPanel} ${isMobile ? styles.mobile : ''}`}
+          ref={filterRef}
+        >
+          <FilterPanel 
+            onFilterChange={setActiveFilter}
+            isOpen={filterPanelOpen}
+            onClose={closeFilterPanel}
+            activeFilter={activeFilter}
+            isMobile={isMobile}
+          />
+        </aside>
+      )}
       
       {/* Mobile bottom navigation */}
       {isMobile && (

@@ -288,7 +288,8 @@ const Gallery = ({ filter = 'EVERYTHING', onToggleFilter, filterPanelOpen, isMob
   }
   
   // TikTok-style zoom view
-  return (
+// TikTok-style zoom view
+return (
     <div 
       className={styles.zoomView}
       onTouchStart={handleTouchStart}
@@ -300,8 +301,8 @@ const Gallery = ({ filter = 'EVERYTHING', onToggleFilter, filterPanelOpen, isMob
           className={styles.backButton}
           onClick={switchToGrid}
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M12 16l-6-6 6-6" stroke="currentColor" strokeWidth="2" fill="none"/>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" fill="none"/>
           </svg>
         </button>
       </div>
@@ -317,20 +318,22 @@ const Gallery = ({ filter = 'EVERYTHING', onToggleFilter, filterPanelOpen, isMob
             onDoubleClick={() => toggleLike(project.id)}
             onTouchEnd={() => handleDoubleTap(project.id)}
           >
-            <img 
-              src={project.image} 
-              alt={project.title}
-              className={styles.zoomImage}
-            />
-            
-            {/* Heart animation */}
-            {showHeart === project.id && (
-              <div className={styles.heartAnimation}>
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="white">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-              </div>
-            )}
+            <div className={styles.imageContainer}>
+              <img 
+                src={project.image} 
+                alt={project.title}
+                className={styles.zoomImage}
+              />
+              
+              {/* Heart animation - positioned on the image */}
+              {showHeart === project.id && (
+                <div className={styles.heartAnimation}>
+                  <svg width="120" height="120" viewBox="0 0 24 24" fill="white">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                </div>
+              )}
+            </div>
             
             <div className={styles.sidebar}>
               <button 
@@ -340,16 +343,23 @@ const Gallery = ({ filter = 'EVERYTHING', onToggleFilter, filterPanelOpen, isMob
                   toggleLike(project.id)
                 }}
               >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill={likedItems[project.id] ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill={likedItems[project.id] ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
-                <span>{project.likes + (likedItems[project.id] ? 1 : 0)}</span>
+                <span>{(project.likes + (likedItems[project.id] ? 1 : 0)).toLocaleString()}</span>
               </button>
               
               <button className={styles.shareButton}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                 </svg>
+              </button>
+              
+              <button className={styles.commentButton}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                <span>0</span>
               </button>
             </div>
             

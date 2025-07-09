@@ -1,11 +1,16 @@
+// Minimalist Sidebar Styles with Fixed Scrolling
 .sidebar {
-    height: 100%;
+    width: 280px;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    position: relative;
-    overflow: visible;
+    position: fixed;
+    left: 0;
+    top: 0;
     background-color: var(--bg-primary);
     border-right: 1px solid var(--border-color);
+    z-index: 100;
+    //overflow: hidden; // Important: prevent main sidebar overflow
   }
   
   .sidebarContent {
@@ -13,16 +18,19 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    //overflow: hidden; // Prevent content overflow, but allow internal scrolling
+    min-height: 0; // Allow flex child to shrink
   }
   
   .logo {
     margin-bottom: var(--spacing-xl);
+    cursor: pointer;
+    flex-shrink: 0; // Prevent logo from shrinking
     
     h1 {
-      font-size: 2rem;
-      font-weight: 900;
+      font-size: 12rem;
+      font-weight: 800;
       letter-spacing: -0.02em;
-      cursor: pointer;
       transition: opacity var(--transition-fast);
       
       &:hover {
@@ -32,58 +40,91 @@
   }
   
   .mainNav {
-    margin-bottom: auto;
-    position: relative;
+    flex: 1; // Take available space
+    overflow-y: auto; // Enable unlimited scrolling
+    overflow-x: hidden;
+    margin-bottom: var(--spacing-lg);
+    max-height: none; // Remove any height restrictions
+    
+    // Custom scrollbar styling
+    &::-webkit-scrollbar {
+      width: 3px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+      
+      &:hover {
+        background: var(--text-secondary);
+      }
+    }
+    
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+  }
+  
+  .menuItemWrapper {
+    margin-bottom: var(--spacing-sm);
   }
   
   .menuItem {
     position: relative;
-    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+    padding: var(--spacing-sm) 0;
+    transition: all var(--transition-fast);
+    
+    &:hover {
+      transform: translateX(2px);
+    }
+    
+    &.active {
+      .arrow {
+        transform: rotate(180deg);
+      }
+    }
   }
   
   .menuLink {
     color: var(--text-primary);
     text-decoration: none;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.05em;
     transition: all var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-sm) 0;
     
     &:hover {
       opacity: 0.8;
-      transform: translateX(4px);
     }
+  }
+  
+  .arrow {
+    opacity: 0.6;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
     
-    .arrow {
-      opacity: 0;
-      transform: translateX(-10px);
-      transition: all var(--transition-fast);
-    }
-    
-    &:hover .arrow {
-      opacity: 1;
-      transform: translateX(0);
+    &.rotated {
+      transform: rotate(180deg);
     }
   }
   
   .submenu {
-    position: absolute;
-    left: calc(100% + var(--spacing-xl));
-    top: -20px;
-    width: 400px;
-    z-index: 1000;
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: var(--spacing-sm);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: none;
+    margin-top: var(--spacing-sm);
+    margin-left: var(--spacing-md);
     
-    @media (max-width: 1400px) {
-      width: 350px;
+    &.expanded {
+      display: block;
     }
   }
   
@@ -91,60 +132,82 @@
     display: block;
     text-decoration: none;
     margin-bottom: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-xs);
     position: relative;
-    overflow: hidden;
-    border-radius: 6px;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
     
     &:last-child {
       margin-bottom: 0;
     }
     
     &:hover {
-      .submenuBg {
-        transform: scaleX(1);
-      }
-      
-      .submenuContent {
-        color: var(--bg-primary);
-        transform: translateX(4px);
-      }
+      background: var(--bg-tertiary);
     }
   }
   
   .submenuContent {
     position: relative;
-    padding: var(--spacing-md) var(--spacing-lg);
-    z-index: 2;
-    transition: all var(--transition-fast);
     color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .submenuHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: -100px
+  }
+  
+  .submenuLogo {
+    height: 24px;
+    width: auto;
+    max-width: 50px;
+    min-width: 24px;
+    object-fit: contain;
+    transition: all var(--transition-fast);
+    filter: brightness(var(--logo-brightness, 1));
+    margin-bottom: -8px; // Use negative value to pull text up
     
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: var(--spacing-xs);
-      letter-spacing: -0.02em;
+    // Adjust brightness based on theme
+    :root[data-theme="dark"] & {
+      --logo-brightness: 1;
     }
     
-    p {
-      font-size: 0.75rem;
-      line-height: 1.4;
-      opacity: 0.7;
+    :root[data-theme="light"] & {
+      --logo-brightness: 1;
+    }
+    
+    // Handle different logo formats
+    &[src*=".svg"] {
+      filter: brightness(var(--logo-brightness, 1)) contrast(1.1);
     }
   }
   
-  .submenuBg {
-    position: absolute;
-    inset: 0;
-    background: var(--item-color, var(--text-primary));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-    z-index: 1;
+  .submenuText {
+    text-align: center;
+    
+    p {
+      font-size: 0.7rem;
+      line-height: 1.2;
+      opacity: 0.75;
+      margin: 0;
+      max-width: 120px; // Limit width to keep text short
+      font-weight: 50;
+      white-space: normal;
+      word-wrap: break-word;
+    }
   }
   
   .controls {
     display: flex;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    flex-shrink: 0; // Prevent controls from shrinking
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
     
     button {
       background: none;
@@ -152,13 +215,200 @@
       color: var(--text-primary);
       padding: var(--spacing-xs) var(--spacing-sm);
       cursor: pointer;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       font-weight: 500;
       transition: all var(--transition-fast);
+      border-radius: 3px;
+      flex: 1;
       
       &:hover {
         background: var(--text-primary);
         color: var(--bg-primary);
+        transform: translateY(-1px);
+      }
+      
+      &:active {
+        transform: translateY(0);
       }
     }
+  }
+  
+  // Mobile responsive adjustments
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+    
+    .sidebarContent {
+      padding: var(--spacing-lg) var(--spacing-md);
+      max-height: none; // Remove height restrictions
+    }
+    
+    .mainNav {
+      max-height: none; // Remove height restrictions for unlimited scrolling
+    }
+    
+    .submenuLogo {
+      height: 30px;
+      max-width: 50px;
+      min-width: 30px;
+    }
+    
+    .submenuText {
+      p {
+        font-size: 0.5rem;
+        line-height: 1.1;
+        max-width: 90px;
+      }
+    }
+    
+    .submenuItem {
+      padding: var(--spacing-xs);
+    }
+  }
+  
+  // Accessibility improvements
+  @media (prefers-reduced-motion: reduce) {
+    .menuItem,
+    .submenuItem,
+    .submenuLogo,
+    .controls button,
+    .arrow {
+      transition: none;
+    }
+  }
+  
+  // High contrast mode support
+  @media (prefers-contrast: high) {
+    .submenuItem {
+      border: 1px solid var(--border-color);
+    }
+    
+    .controls button {
+      border-width: 2px;
+    }
+  }
+  
+  // Focus states for accessibility
+  .menuItem:focus-visible,
+  .submenuItem:focus-visible,
+  .controls button:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+  }
+  
+  // Smooth scrolling
+  .mainNav {
+    scroll-behavior: smooth;
+  }
+  
+  // Ensure proper spacing in submenu
+  .submenu {
+    .submenuItem:first-child {
+      margin-top: var(--spacing-xs);
+    }
+  }
+
+  .submenuLogo {
+    height: 60px; // Increased from 24px
+    width: auto;
+    max-width: 100px; // Increased from 50px
+    min-width: 60px; // Increased from 24px
+    object-fit: contain;
+    transition: all var(--transition-fast);
+    filter: brightness(var(--logo-brightness, 1));
+    margin-bottom: -20px; // Add some spacing below logo
+    
+    // Add a subtle hover effect to make it more interactive
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    // Adjust brightness based on theme
+    :root[data-theme="dark"] & {
+      --logo-brightness: 1.1; // Slightly brighter in dark mode
+    }
+    
+    :root[data-theme="light"] & {
+      --logo-brightness: 1.5; // Slightly darker in light mode
+    }
+    
+    // Handle different logo formats
+    &[src*=".svg"] {
+      filter: brightness(var(--logo-brightness, 1)) contrast(1.1);
+    }
+  }
+  
+  .submenuText {
+    text-align: center;
+    
+    p {
+      font-size: 0.65rem; // Slightly smaller to emphasize logo more
+      line-height: 1.3;
+      opacity: 0.7; // Reduced opacity to make logo stand out
+      margin: 0;
+      max-width: 140px; // Increased to accommodate larger logo
+      font-weight: 400;
+      white-space: normal;
+      word-wrap: break-word;
+      margin-top: var(--spacing-xs); // Add space between logo and text
+    }
+  }
+  
+  // Enhanced mobile styles
+  @media (max-width: 768px) {
+    .submenuLogo {
+      height: 45px; // Even bigger on mobile for touch-friendly design
+      max-width: 90px;
+      min-width: 45px;
+    }
+    
+    .submenuText {
+      p {
+        font-size: 0.6rem;
+        line-height: 1.2;
+        max-width: 120px;
+      }
+    }
+  }
+  
+  // Add some visual hierarchy improvements
+  .submenuItem {
+    display: block;
+    text-decoration: none;
+    margin-bottom: var(--spacing-sm); // Increased spacing between items
+    padding: var(--spacing-md) var(--spacing-sm); // More padding for better touch targets
+    position: relative;
+    border-radius: 8px; // Slightly larger border radius
+    transition: all var(--transition-fast);
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    &:hover {
+      background: var(--bg-tertiary);
+      transform: translateY(-2px); // Subtle lift effect
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .submenuContent {
+    position: relative;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: -1px;
+  }
+  
+  .submenuHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    width: 100%;
   }

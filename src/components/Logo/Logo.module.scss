@@ -1,0 +1,151 @@
+.logoContainer {
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+    &:hover {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    // Size variations
+    &.small {
+      .logoImage {
+        height: 32px;
+        width: auto;
+      }
+    }
+    
+    &.default {
+      .logoImage {
+        height: 48px;
+        width: auto;
+        
+        @media (max-width: 768px) {
+          height: 36px;
+        }
+      }
+    }
+    
+    &.large {
+      .logoImage {
+        height: 64px;
+        width: auto;
+      }
+    }
+    
+    &.hero {
+      .logoImage {
+        height: 120px;
+        width: auto;
+        
+        @media (max-width: 768px) {
+          height: 80px;
+        }
+      }
+    }
+  }
+  
+  .logoImage {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    transition: all var(--transition-fast);
+    filter: brightness(1);
+    
+    // Ensure crisp rendering
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    
+    // Smooth loading
+    opacity: 1;
+    
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+  
+  // Fallback text logo
+  .logoFallback {
+    font-family: var(--font-heading, 'Gilroy', sans-serif);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+    
+    &:hover {
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    // Size variations for fallback text
+    &.small {
+      font-size: 1.25rem;
+    }
+    
+    &.default {
+      font-size: 1.75rem;
+      
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+    }
+    
+    &.large {
+      font-size: 2.25rem;
+    }
+    
+    &.hero {
+      font-size: 4rem;
+      
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+    }
+  }
+  
+  // Loading state
+  .logoContainer.loading {
+    .logoImage, .logoFallback {
+      opacity: 0.6;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.6;
+    }
+  }
+  
+  // Theme-specific adjustments
+  [data-theme="dark"] {
+    .logoFallback {
+      color: var(--text-primary);
+    }
+  }
+  
+  [data-theme="light"] {
+    .logoFallback {
+      color: var(--text-primary);
+    }
+  }

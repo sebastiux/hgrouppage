@@ -1,4 +1,4 @@
-@import './variables.scss';
+@use './variables.scss' as *;
 
 * {
   margin: 0;
@@ -82,3 +82,123 @@ body {
   background: var(--text-primary);
   color: var(--bg-primary);
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 16px;
+  }
+  
+  body {
+    font-family: 'Visby', 'Gilroy', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background-color var(--transition-medium), color var(--transition-medium);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  #root {
+    min-height: 100vh;
+  }
+  
+  // Typography hierarchy with Visby and Gilroy
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Gilroy', 'Visby', sans-serif;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  
+  h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+  }
+  
+  h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+  }
+  
+  h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+  }
+  
+  p, body {
+    font-family: 'Visby', 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  
+  // Button styles with new fonts
+  button {
+    font-family: 'Visby', sans-serif;
+    font-weight: 600;
+  }
+  
+  // Temporary styles for testing
+  .app {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .temp-container {
+    text-align: center;
+    
+    h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      transition: color var(--transition-fast);
+      font-family: 'Gilroy', sans-serif;
+    }
+    
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      font-size: 1.125rem;
+      font-family: 'Visby', sans-serif;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      
+      button {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        border: 2px solid var(--text-primary);
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        font-family: 'Visby', sans-serif;
+        
+        &:hover {
+          background: var(--text-primary);
+          color: var(--bg-primary);
+          transform: translateY(-2px);
+        }
+        
+        &:active {
+          transform: translateY(0);
+        }
+      }
+    }
+  }
+  
+  // Selection colors
+  ::selection {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+  }
